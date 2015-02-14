@@ -15,9 +15,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    tcpmanger.cpp
+    tcpmanger.cpp \
+    setuptcpdialog.cpp
 
 HEADERS  += mainwindow.h \
-    tcpmanger.h
+    tcpmanger.h \
+    setuptcpdialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    setuptcpdialog.ui
