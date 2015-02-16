@@ -23,6 +23,7 @@ signals:
 
 private slots:
     void dataFromServer();
+    void error(QAbstractSocket::SocketError socketError);
 
 public slots:
     void newIpAndPort(QString ipAdress, quint16 portNumber);

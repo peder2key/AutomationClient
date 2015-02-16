@@ -7,13 +7,18 @@ TcpManger::TcpManger(QObject *parent) : QObject(parent)
 
     mTcpSocket = new QTcpSocket(this);
     connect(mTcpSocket, SIGNAL(readyRead()),this, SLOT(dataFromServer()));
+    connect(mTcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(error(QAbstractSocket::SocketError)));
+
     IpAdress = new QHostAddress();
+
+   // QList<QHostAddress> ipAddressesList = QNetworkInterface::allAddresses();
+
 
     IpString = mSetupTcpDialog->getIpAdress();
     PortNumber = mSetupTcpDialog->getPortNumber();
 
     connectToServer();
-    qDebug() << IpString << PortNumber;
+
 
 }
 
@@ -27,6 +32,7 @@ void TcpManger::showSetupDialog()
 
     mSetupTcpDialog->show();
     mSetupTcpDialog->setModal(true);
+    mTcpSocket->abort();
 
 }
 
@@ -34,8 +40,9 @@ void TcpManger::connectToServer()
 {
     try
     {
-        IpAdress->setAddress(IpString);
+        //IpAdress->setAddress(IpString);
         mTcpSocket->connectToHost(*IpAdress, PortNumber, QIODevice::ReadWrite);
+        //mTcpSocket->connectToHost(IpString,PortNumber, QIODevice::ReadWrite);
     }
     catch(...)
     {
@@ -66,6 +73,30 @@ void TcpManger::dataFromServer()
 
 }
 
+void TcpManger::error(QAbstractSocket::SocketError socketError)
+{
+    switch (socketError) {
+    case QAbstractSocket::RemoteHostClosedError:
+        break;
+    case QAbstractSocket::HostNotFoundError:
+        QMessageBox::information(qobject_cast<QWidget *>(parent()), tr("Client"), tr("The host was not found. Please check the host name and port settings."));
+
+
+        break;
+    case QAbstractSocket::ConnectionRefusedError:
+        QMessageBox::information(qobject_cast<QWidget *>(parent()), tr("Client"), tr("The connection was refused by the Server. "
+                                    "Make sure the WD electronic server is running, "
+                                    "and check that the host name and port "
+                                    "settings are correct."));
+        break;
+    default:
+        QMessageBox::information(qobject_cast<QWidget *>(parent()), tr("Client"),
+                                 tr("The following error occurred: %1.")
+                                 .arg(mTcpSocket->errorString()));
+    }
+
+}
+
 
 
 // /////////////////////////////////////////////////
@@ -74,7 +105,7 @@ void TcpManger::dataFromServer()
 
 void TcpManger::newIpAndPort(QString ipAdress, quint16 portNumber)
 {
-    mTcpSocket->disconnectFromHost();
+
     IpAdress->clear();
     IpString = ipAdress;
     PortNumber = portNumber;
