@@ -7,6 +7,7 @@
 #include <QMessageBox>
 
 #include "setuptcpdialog.h"
+#include "processincommingdata.h"
 
 
 class TcpManger : public QObject
@@ -18,11 +19,12 @@ public:
     void showSetupDialog();
     void connectToServer();
     void sendData(QByteArray SendSomeData);
+    void sendRequest(quint16 blockSize, quint8 command, quint8 readOrWrite, quint16 elements);
 
 signals:
 
 private slots:
-    void dataFromServer();
+    void readyRead();
     void error(QAbstractSocket::SocketError socketError);
 
 public slots:
@@ -32,6 +34,7 @@ private:
     SetupTcpDialog *mSetupTcpDialog;
     QTcpSocket *mTcpSocket;
     QHostAddress *IpAdress;
+    processIncommingData *mProcessIncommingData;
 
     quint16 PortNumber;
     QString IpString;

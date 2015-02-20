@@ -6,8 +6,10 @@ TcpManger::TcpManger(QObject *parent) : QObject(parent)
     connect(mSetupTcpDialog, SIGNAL(newIpAndPort(QString,quint16)),this, SLOT(newIpAndPort(QString,quint16)));
 
     mTcpSocket = new QTcpSocket(this);
-    connect(mTcpSocket, SIGNAL(readyRead()),this, SLOT(dataFromServer()));
+    connect(mTcpSocket, SIGNAL(readyRead()),this, SLOT(readyRead()));
     connect(mTcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(error(QAbstractSocket::SocketError)));
+
+    mProcessIncommingData = new processIncommingData(this);
 
     IpAdress = new QHostAddress();
 
@@ -40,7 +42,7 @@ void TcpManger::connectToServer()
 {
     try
     {
-        //IpAdress->setAddress(IpString);
+        IpAdress->setAddress(IpString);
         mTcpSocket->connectToHost(*IpAdress, PortNumber, QIODevice::ReadWrite);
         //mTcpSocket->connectToHost(IpString,PortNumber, QIODevice::ReadWrite);
     }
@@ -50,7 +52,6 @@ void TcpManger::connectToServer()
     }
 
 
-    qDebug() << "We are connected: " << IpAdress << "and Port: " << PortNumber;
 
 }
 
@@ -67,11 +68,7 @@ void TcpManger::sendData(QByteArray SendSomeData)
 
 }
 
-void TcpManger::dataFromServer()
-{
-    qDebug() << mTcpSocket->readAll();
 
-}
 
 void TcpManger::error(QAbstractSocket::SocketError socketError)
 {
@@ -121,3 +118,34 @@ void TcpManger::newIpAndPort(QString ipAdress, quint16 portNumber)
 // /////////////////////////////////////////////////
 //  PUBLIC SLOTS END
 // /////////////////////////////////////////////////
+
+// /////////////////////////////////////////////////
+//  Request data
+// /////////////////////////////////////////////////
+
+void TcpManger::sendRequest(quint16 blockSize, quint8 command, quint8 readOrWrite, quint16 elements)
+{
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out.setVersion(QDataStream::Qt_5_3);
+    out << blockSize << command << readOrWrite << elements;
+
+    out.device()->seek(0);
+    out << quint16(block.size() - sizeof(quint16));
+    mTcpSocket->write(block);
+
+}
+
+void TcpManger::readyRead()
+{
+
+}
+
+
+// /////////////////////////////////////////////////
+//  Request data END
+// /////////////////////////////////////////////////
+
+
+
+
