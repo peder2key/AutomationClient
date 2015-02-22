@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>44</x>
@@ -82,6 +82,7 @@
      <string>Utility</string>
     </property>
     <addaction name="actionServer_Connection"/>
+    <addaction name="actionShow_All_Devices"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuUtility"/>
@@ -98,6 +99,11 @@
   <action name="actionServer_Connection">
    <property name="text">
     <string>Server Connection</string>
+   </property>
+  </action>
+  <action name="actionShow_All_Devices">
+   <property name="text">
+    <string>Show All Devices</string>
    </property>
   </action>
  </widget>

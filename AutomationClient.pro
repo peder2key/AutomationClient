@@ -17,12 +17,15 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     setuptcpdialog.cpp \
     tcpmanger.cpp \
-    processincommingdata.cpp
+    processincommingdata.cpp \
+    viewalldevicesdialog.cpp
 
 HEADERS  += mainwindow.h \
     setuptcpdialog.h \
     tcpmanger.h \
-    processincommingdata.h
+    processincommingdata.h \
+    viewalldevicesdialog.h
 
 FORMS    += mainwindow.ui \
-    setuptcpdialog.ui
+    setuptcpdialog.ui \
+    viewalldevicesdialog.ui

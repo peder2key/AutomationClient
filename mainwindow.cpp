@@ -37,3 +37,10 @@ void MainWindow::on_pushButtonSend_clicked()
     mTcpManger->sendData(data);
 
 }
+
+void MainWindow::on_actionShow_All_Devices_triggered()
+{
+    mViewAllDevicesDialig = new ViewAllDevicesDialog(this);
+    mViewAllDevicesDialig->show();
+
+}
